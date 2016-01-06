@@ -1,6 +1,8 @@
 
-Rundeck Telegram Plugin
+Rundeck Telegram Plugin 
 =======================
+
+![Build Status](https://travis-ci.org/ajrnz/rundeck-telegram-plugin.svg)
 
 Sends Rundeck notifications to [Telegram](http://www.telegram.org) a mobile and desktop messaging system.
 
@@ -21,7 +23,7 @@ Build the plugin:
 
     sbt rundeckPlugin
 
-The plugin will be placed in `target/rundeck-telegram-plugin-\<version\>.jar`
+The plugin will be placed in `target/rundeck-telegram-plugin-<version>.jar`
 
 
 Configuration
@@ -65,8 +67,21 @@ The plugin uses [Freemarker](http://www.freemarker.org) to render templates. Fre
 
 could be used to output the project, group and job name. 
 
+Templates can come from three sources with the first having priority
 
-For reference the available variables look like the following:
+1. The message template string in the job definition
+2. The message template name in the job definition
+3. The message template name in the project or framework property
+
+The location from which the templates are loaded can be controlled with the `project.plugin.Notification.TelegramNotification.templateDir` configuration setting
+
+For example you might make a template file `status.ftl`:
+
+    ${job.project}: ${job.group}/${job.name}
+    Status: ${status} (${context.job.execid})
+
+
+For reference the available variables for substitution look like the following:
 
     {
       id=60,

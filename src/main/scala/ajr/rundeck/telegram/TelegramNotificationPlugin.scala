@@ -15,6 +15,7 @@ import freemarker.template.Configuration
 import TelegramNotificationPlugin._
 import java.io.File
 import java.io.StringWriter
+import java.io.FileNotFoundException
 
 object TelegramNotificationPlugin {
   val fmConfig = new Configuration
@@ -25,20 +26,24 @@ object TelegramNotificationPlugin {
 @PluginDescription(title = "Telegram")
 class TelegramNotificationPlugin extends NotificationPlugin {    
   @PluginProperty(title = "Bot name/token", 
-                  description = "Bot name or auth token. Names must be defined in rundeck-config.properties. If blank inherits the project value if it exists", 
+                  description = "Bot name or auth token. Names must be defined in telegram.properties. If blank inherits the project value if it exists", 
                   required = false, scope = PropertyScope.InstanceOnly)
   private var botAuthToken: String = _
 
   @PluginProperty(title = "Project default Bot name/token", 
-                  description = "Bot name or auth token. Names must be defined in rundeck-config.properties. If blank inherits the project value if it exists", 
+                  description = "Bot name or auth token. Names must be defined in telegram.properties", 
                   required = false, scope = PropertyScope.Project)
   private var projectBotAuthToken: String = _
   
-  
   @PluginProperty(title = "Chat name/ID", 
-                  description = "Name or ID of chat to send message to. Names must be defined in rundeck-config.properties", 
+                  description = "Name or ID of chat to send message to. Names must be defined in telegram.properties", 
                   required = false, scope = PropertyScope.InstanceOnly)
   private var chatId: String = _
+
+  @PluginProperty(title = "Telegram config file", 
+                  description = "Location of the telegram.properties file for bot/chat name mapping", 
+                  required = false, defaultValue = "/etc/rundeck/telegram.properties", scope = PropertyScope.Project)
+  private var telegramProperties: String = _
 
   @PluginProperty(title = "Include job log", scope = PropertyScope.InstanceOnly)
   private var includeJobLog: Boolean = false
@@ -49,15 +54,21 @@ class TelegramNotificationPlugin extends NotificationPlugin {
   private var templateMessage: String = _
   
   @PluginProperty(title = "Message Template", 
-                  description = "Absolute path to a FreeMarker template that will be used to generate the notification message. " + 
-                                "If unspecified a default message template will be used.", 
+                  description = "Name of a FreeMarker template used to generate the notification message. " + 
+                                "If unspecified a default message template will be used if it exists.", 
                   required = false, scope = PropertyScope.InstanceOnly)
-  private var templatePath: String = _
+  private var templateName: String = _
 
   @PluginProperty(title = "Project Message Template", 
-                  description = "Absolute path to a FreeMarker template. This will be the default if none is specified at the project level",
+                  description = "Name of a FreeMarker template. This will be the default if none is specified at the project level",
                   required = false, scope = PropertyScope.Project)                  
-  private var templateProject: String = _
+  private var templateNameProject: String = _
+
+  @PluginProperty(title = "Template directory", 
+                  description = "Location to load Freemarker templates from", 
+                  required = false, defaultValue = "/var/lib/rundeck/templates", 
+                  scope = PropertyScope.Project)
+  private var templateDir: String = _
 
   @PluginProperty(title = "Telegram API base URL", 
                   description = "Base URL of Telegram API", 
@@ -80,11 +91,6 @@ class TelegramNotificationPlugin extends NotificationPlugin {
                   required = false, defaultValue = "", scope = PropertyScope.Project)
   private var proxyPort: String = _
 
-  @PluginProperty(title = "Telegram config file", 
-                  description = "Location of the telegram.properties file for bot/chat name mapping", 
-                  required = false, defaultValue = "/etc/rundeck/telegram.properties", scope = PropertyScope.Project)
-  private var telegramProperties: String = _
-
  
   def get[T](name: String, map: JMap[_,_], default: => T = null): T = {
     val value = Option(map.get(name).asInstanceOf[T]).getOrElse(default)
@@ -94,7 +100,9 @@ class TelegramNotificationPlugin extends NotificationPlugin {
   }
 
 
-  def missing(message: String) = throw new Exception("Missing configuration: $message")
+  class InvalidConfigException(message: String) extends Exception
+  
+  def missing(message: String) = throw new InvalidConfigException("Missing configuration: $message")
     
   def ifEmpty(str: String, default: String) = if (str == null || str == "") default else str
   
@@ -123,7 +131,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       val templatePath = get[String]("templatePath", config, "")
       val templateProject = get[String]("templateProject", config, "")
       
-      val message = buildMessage(templateMessage, templatePath, templateProject, executionData)
+      val message = buildMessage(executionData)
       
       (botAuthO, chatO) match {
         case (Some(botAuth), Some(chat)) =>
@@ -154,8 +162,13 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       true
     }
     catch {
+      case e @ (_: InvalidConfigException | _: NumberFormatException | _: FileNotFoundException) =>
+        System.err.println(s"Failed to send Telegram message: ${e.getMessage}")
+        false
+        
       case e: Throwable =>
         System.err.println(s"Failed to send Telegram message: $e")
+        e.printStackTrace()
         false
     }
   }
@@ -191,8 +204,14 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       None
   }
 
-  def buildMessage(templateMessage: String, templatePath: String, templateProject: String, executionData: JMap[_,_]): String = {
-    fmConfig.setDirectoryForTemplateLoading(new File("/var/lib/rundeck/templates"));
+  def buildMessage(executionData: JMap[_,_]): String = {
+    println(s"templateDir: $templateDir")
+    val templateDirFile = new File(templateDir)
+    if (!templateDirFile.exists())
+      templateDirFile.mkdir()
+      
+    if (templateDirFile.exists())
+      fmConfig.setDirectoryForTemplateLoading(templateDirFile);
 
     val template = 
       if (templateMessage != "") {
@@ -201,14 +220,14 @@ class TelegramNotificationPlugin extends NotificationPlugin {
         fmConfig.setTemplateLoader(stringLoader)
         fmConfig.getTemplate("message")
       }
-      else if (templatePath != "") {
-          fmConfig.getTemplate(templatePath)
+      else if (templateName != "") {
+          fmConfig.getTemplate(templateName)
       }
-      else if (templateProject != "") {
-          fmConfig.getTemplate(templateProject)
+      else if (templateNameProject != "") {
+          fmConfig.getTemplate(templateNameProject)
       }
       else {
-        throw new Exception("None of templateMessage, templatePath, templateProject set")
+        throw new InvalidConfigException("None of templateMessage, templateName, templateNameProject set")
       }
     val out = new StringWriter()
     template.process(executionData, out)
