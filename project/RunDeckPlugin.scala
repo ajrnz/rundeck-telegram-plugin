@@ -15,8 +15,8 @@ object RunDeckPlugin extends Plugin {
     cacheDirectory := (cacheDirectory / rundeckPlugin.key.label).value
   )) ++ Seq(
     pluginClassNames := "",
-    publishArtifact in rundeckPlugin := publishMavenStyle.value,
-    artifact in rundeckPlugin := moduleName(Artifact(_, "plugin")).value,
+    artifact := artifact.value.copy(name=artifact.value.name + "-classes"),
+    artifact in rundeckPlugin := moduleName(Artifact(_)).value,
     packageOptions in rundeckPlugin := Seq(ManifestAttributes(
       "Rundeck-Plugin-File-Version" -> version.value,
       "Rundeck-Plugin-Classnames" -> pluginClassNames.value,
@@ -30,7 +30,8 @@ object RunDeckPlugin extends Plugin {
       }
     )),
     mappings in rundeckPlugin := {
-      Build.data((dependencyClasspath in Runtime).value).map(f => (f, (file("lib") / f.name).getPath))
+      Build.data((dependencyClasspath in Runtime).value)
+        .map(f => (f, (file("lib") / f.name).getPath))
     },
     rundeckPlugin := {
       val artifact = (artifactPath in rundeckPlugin).value

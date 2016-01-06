@@ -4,6 +4,8 @@ version := "1.0.0"
 
 scalaVersion := "2.11.7"
 
+crossPaths := false
+
 enablePlugins(EclipseClasspath)
 
 ajr.rundeck.RunDeckPlugin.pluginSettings

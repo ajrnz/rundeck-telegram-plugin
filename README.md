@@ -21,7 +21,7 @@ Build the plugin:
 
     sbt rundeckPlugin
 
-The plugin will be placed in `target/scala-2.11/`
+The plugin will be placed in `target/rundeck-telegram-plugin-\<version\>.jar`
 
 
 Configuration
