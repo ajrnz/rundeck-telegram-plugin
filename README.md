@@ -1,8 +1,7 @@
 
-Rundeck Telegram Plugin 
+Rundeck Telegram Plugin   ![Build Status](https://travis-ci.org/ajrnz/rundeck-telegram-plugin.svg)
 =======================
 
-![Build Status](https://travis-ci.org/ajrnz/rundeck-telegram-plugin.svg)
 
 Sends Rundeck notifications to [Telegram](http://www.telegram.org) a mobile and desktop messaging system.
 
@@ -12,8 +11,8 @@ The current version is 1.0.0.
 Installation
 ------------
 
-1. Download from GitHub ([here]()) or build from source
-2. Copy the plugin jar (rundeck-telegram-plugin-\<version\>.jar) to \<Rundeck\>/libext directory. It will be picked up and installed instantly - a restart is not required.
+1. Download from GitHub ([rundeck-telegram-plugin-1.0.0.jar](https://github.com/ajrnz/rundeck-telegram-plugin/releases/download/v1.0.0/rundeck-telegram-plugin-1.0.0.jar)) or build from source
+2. Copy the plugin jar (`rundeck-telegram-plugin-<version>.jar`) to `<Rundeck>/libext` directory. It will be picked up and installed instantly - a restart is not required.
 
 
 Building
