@@ -163,7 +163,8 @@ class TelegramNotificationPlugin extends NotificationPlugin {
     }
     catch {
       case e @ (_: InvalidConfigException | _: NumberFormatException | _: FileNotFoundException) =>
-        System.err.println(s"Failed to send Telegram message: ${e.getMessage}")
+        System.err.println(s"Failed to send Telegram message - check config: $e")
+        e.printStackTrace()        
         false
         
       case e: Throwable =>
