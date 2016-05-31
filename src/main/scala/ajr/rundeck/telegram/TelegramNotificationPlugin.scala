@@ -104,7 +104,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
   
   def missing(message: String) = throw new InvalidConfigException(s"Missing configuration: $message")
     
-  def ifEmpty(str: String, default: String) = if (str == null || str == "") default else str
+  def ifEmpty(str: String, default: => String) = if (str == null || str == "") default else str
   
   override def postNotification(trigger: String, executionData: JMap[_,_], config: JMap[_,_]): Boolean = {
     println(s"TelegramNotification: $trigger\n\nExecutionData: $executionData\n\nConfig: $config")
