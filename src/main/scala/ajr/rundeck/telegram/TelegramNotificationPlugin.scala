@@ -100,9 +100,9 @@ class TelegramNotificationPlugin extends NotificationPlugin {
   }
 
 
-  class InvalidConfigException(message: String) extends Exception
+  class InvalidConfigException(message: String) extends Exception(message)
   
-  def missing(message: String) = throw new InvalidConfigException("Missing configuration: $message")
+  def missing(message: String) = throw new InvalidConfigException(s"Missing configuration: $message")
     
   def ifEmpty(str: String, default: String) = if (str == null || str == "") default else str
   
