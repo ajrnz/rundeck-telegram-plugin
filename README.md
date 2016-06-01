@@ -49,7 +49,7 @@ You can then refer to your bots and chats by name in the plugin although the IDs
 
 Got to `Configure -> List Plugins -> Notification Plugins -> Telegram` to see a list of the configuration options. 
 
-You will need to generate a Rundeck API key if you want to include the job log in the message as the plugin retrieves the log via the Rundeck API.
+You will need to generate a [Rundeck API key](http://rundeck.org/2.6.7/api/index.html#token-authentication) if you want to include the job log in the message as the plugin retrieves the log via the Rundeck API.
 
 Settings can be edited in the GUI from `Configure -> Project Configuration: <Project> -> Edit Configuration File`
 
