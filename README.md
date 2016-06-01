@@ -5,13 +5,11 @@ Rundeck Telegram Plugin   ![Build Status](https://travis-ci.org/ajrnz/rundeck-te
 
 Sends Rundeck notifications to [Telegram](http://www.telegram.org) a mobile and desktop messaging system.
 
-The current version is 1.0.0.
-
 
 Installation
 ------------
 
-1. Download from GitHub ([rundeck-telegram-plugin-1.0.0.jar](https://github.com/ajrnz/rundeck-telegram-plugin/releases/download/v1.0.0/rundeck-telegram-plugin-1.0.0.jar)) or build from source
+1. Download from GitHub ([rundeck-telegram-plugin-<version>.jar](https://github.com/ajrnz/rundeck-telegram-plugin/releases/latest)) or build from source
 2. Copy the plugin jar (`rundeck-telegram-plugin-<version>.jar`) to `<Rundeck>/libext` directory. It will be picked up and installed instantly - a restart is not required.
 
 
@@ -49,7 +47,8 @@ You can then refer to your bots and chats by name in the plugin although the IDs
 
 Got to `Configure -> List Plugins -> Notification Plugins -> Telegram` to see a list of the configuration options. 
 
-You will need to generate a [Rundeck API key](http://rundeck.org/2.6.7/api/index.html#token-authentication) if you want to include the job log in the message as the plugin retrieves the log via the Rundeck API.
+You will need to generate a [Rundeck API key](http://rundeck.org/2.6.7/api/index.html#token-authentication
+) if you want to include the job log in the message as the plugin retrieves the log via the Rundeck API.
 
 Settings can be edited in the GUI from `Configure -> Project Configuration: <Project> -> Edit Configuration File`
 
