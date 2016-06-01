@@ -9,7 +9,7 @@ Sends Rundeck notifications to [Telegram](http://www.telegram.org) a mobile and 
 Installation
 ------------
 
-1. Download from GitHub ([rundeck-telegram-plugin-<version>.jar](https://github.com/ajrnz/rundeck-telegram-plugin/releases/latest)) or build from source
+1. Download from GitHub ([`rundeck-telegram-plugin-<version>.jar`](https://github.com/ajrnz/rundeck-telegram-plugin/releases/latest)) or build from source
 2. Copy the plugin jar (`rundeck-telegram-plugin-<version>.jar`) to `<Rundeck>/libext` directory. It will be picked up and installed instantly - a restart is not required.
 
 
