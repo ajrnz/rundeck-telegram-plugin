@@ -1,12 +1,10 @@
 name := "rundeck-telegram-plugin"
 
-version := "1.0.3"
+version := "1.0.4"
 
 scalaVersion := "2.11.7"
 
 crossPaths := false
-
-//enablePlugins(EclipseClasspath)
 
 ajr.rundeck.RunDeckPlugin.pluginSettings
 

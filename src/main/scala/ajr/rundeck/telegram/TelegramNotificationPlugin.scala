@@ -119,6 +119,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
     else None
   
     val myHttp = new BaseHttp(proxy)
+    val httpNoProxy = new BaseHttp()
   
     try {
       val telegramAPi = get[String]("telegramApiBaseUrl", config)
@@ -141,7 +142,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
           if (ok) {
             println("Telegram mesage sent")
             if (get[String]("includeJobLog", config, "false").toBoolean) {
-              getJobLog(chat, executionData, config, myHttp) match {
+              getJobLog(chat, executionData, config, httpNoProxy) match {
                 case Some((log, fileName)) => 
                   val (code, _) = telegram.sendDocument(chat, log.getBytes, fileName)
                   resultOk(code)
@@ -177,7 +178,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
   private def resultOk(code: Int): Boolean = (code >= 200 && code < 300)
    
 
-  private def getJobLog(chat: Int, executionData: JMap[_,_], config: JMap[_,_], myHttp: BaseHttp): Option[(String, String)] = {
+  private def getJobLog(chat: Int, executionData: JMap[_,_], config: JMap[_,_], http: BaseHttp): Option[(String, String)] = {
     try {
       val rundeckKey = get[String]("rundeckApiKey", config)
       val context = get[JMap[_,_]]("context", executionData)
@@ -186,7 +187,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       val execId = get[String]("execid", job).toInt
       val name = get[String]("name", job)
       val fileName = s"${name}_$execId.txt"
-      getRundeckLog(execId, rundeckKey, serverUrl, myHttp).map((_, fileName))
+      getRundeckLog(execId, rundeckKey, serverUrl, http).map((_, fileName))
     }
     catch {
       case e: Throwable =>
