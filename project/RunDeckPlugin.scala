@@ -10,7 +10,7 @@ object RunDeckPlugin extends Plugin {
   val rundeckPlugin = TaskKey[File]("rundeckPlugin", "Create a Rundeck plugin")
   val pluginClassNames = TaskKey[String]("Rundeck plugin entrypoint class names")
 
-  val pluginSettings: Seq[Project.Setting[_]] = inTask(rundeckPlugin)(Seq(
+  val pluginSettings: Seq[Def.Setting[_]] = inTask(rundeckPlugin)(Seq(
     artifactPath := artifactPathSetting(artifact).value,
     cacheDirectory := (cacheDirectory / rundeckPlugin.key.label).value
   )) ++ Seq(
@@ -23,14 +23,14 @@ object RunDeckPlugin extends Plugin {
       "Rundeck-Plugin-Archive" -> "true",
       "Rundeck-Plugin-Version" -> "1.1",
       "Rundeck-Plugin-Libs" -> {
-        Build.data((dependencyClasspath in Runtime).value)
+        Attributed.data((dependencyClasspath in Runtime).value)
           .map(f => s"lib/${f.name}")
           .filter(_ != "lib/classes")
           .mkString(" ")
       }
     )),
     mappings in rundeckPlugin := {
-      Build.data((dependencyClasspath in Runtime).value)
+      Attributed.data((dependencyClasspath in Runtime).value)
         .map(f => (f, (file("lib") / f.name).getPath))
     },
     rundeckPlugin := {

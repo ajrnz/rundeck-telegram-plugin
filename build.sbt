@@ -1,8 +1,8 @@
 name := "rundeck-telegram-plugin"
 
-version := "1.0.4"
+version := "1.0.6"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.11"
 
 crossPaths := false
 
