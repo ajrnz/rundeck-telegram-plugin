@@ -18,8 +18,8 @@ class TelegramIds(telegramProperties: String = "/etc/rundeck/telegram.properties
       System.err.println(s"Failed to load $telegramProperties") 
   }
 
-  def lookupChat(chatNameOrId: String): Option[Int] = {
-    lookupNameOrId("chat", chatNameOrId).flatMap(x=> Try(x.toInt).toOption)
+  def lookupChat(chatNameOrId: String): Option[Long] = {
+    lookupNameOrId("chat", chatNameOrId).flatMap(x=> Try(x.toLong).toOption)
   }
   
   def lookupBot(botNameOrId: String): Option[String] = lookupNameOrId("bot", botNameOrId)

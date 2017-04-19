@@ -178,7 +178,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
   private def resultOk(code: Int): Boolean = (code >= 200 && code < 300)
    
 
-  private def getJobLog(chat: Int, executionData: JMap[_,_], config: JMap[_,_], http: BaseHttp): Option[(String, String)] = {
+  private def getJobLog(chat: Long, executionData: JMap[_,_], config: JMap[_,_], http: BaseHttp): Option[(String, String)] = {
     try {
       val rundeckKey = get[String]("rundeckApiKey", config)
       val context = get[JMap[_,_]]("context", executionData)
