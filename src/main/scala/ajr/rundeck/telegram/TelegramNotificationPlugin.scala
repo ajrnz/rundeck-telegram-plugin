@@ -229,17 +229,17 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       executionData.asInstanceOf[JMap[String,String]].put(s"${dateType}IsoString", dateStr)
     }
 
-    val template = 
-      if (templateMessage != "") {
+    val template =
+      if (ifEmpty(templateMessage, "") != "") {
         val stringLoader = new StringTemplateLoader()
         stringLoader.putTemplate("message", templateMessage)
         fmConfig.setTemplateLoader(stringLoader)
         fmConfig.getTemplate("message")
       }
-      else if (templateName != "") {
+      else if (ifEmpty(templateName, "") != "") {
           fmConfig.getTemplate(templateName)
       }
-      else if (templateNameProject != "") {
+      else if (ifEmpty(templateNameProject, "") != "") {
           fmConfig.getTemplate(templateNameProject)
       }
       else {
