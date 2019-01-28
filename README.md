@@ -140,3 +140,14 @@ Troubleshooting
 ---------------
 
 If messages are not being send take a look in `/var/log/rundeck/service.log` for any hints
+
+
+Change Log
+----------
+
+1.0.7
+-----
+- Tweaks to work with RunDeck 3 (thanks @NFDWADM)
+- use `dateStartedIsoString` and `dateEndedIsoString` to get string dates
+
+...
