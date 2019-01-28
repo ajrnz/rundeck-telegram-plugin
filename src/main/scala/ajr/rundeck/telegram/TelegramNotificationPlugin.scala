@@ -1,7 +1,8 @@
 package ajr.rundeck.telegram
 
 import java.net.InetSocketAddress
-import java.util.{ Map => JMap }
+import java.util.{Map => JMap}
+
 import scala.collection.JavaConversions._
 import com.dtolabs.rundeck.core.plugins.Plugin
 import com.dtolabs.rundeck.plugins.descriptions.PluginDescription
@@ -16,6 +17,8 @@ import TelegramNotificationPlugin._
 import java.io.File
 import java.io.StringWriter
 import java.io.FileNotFoundException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 object TelegramNotificationPlugin {
   val fmConfig = new Configuration
@@ -91,7 +94,10 @@ class TelegramNotificationPlugin extends NotificationPlugin {
                   required = false, defaultValue = "", scope = PropertyScope.Project)
   private var proxyPort: String = _
 
- 
+
+  private val isoFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+
+
   def get[T](name: String, map: JMap[_,_], default: => T = null): T = {
     val value = Option(map.get(name).asInstanceOf[T]).getOrElse(default)
     if (value == null)
@@ -211,9 +217,17 @@ class TelegramNotificationPlugin extends NotificationPlugin {
     val templateDirFile = new File(templateDir)
     if (!templateDirFile.exists())
       templateDirFile.mkdir()
-      
+
+
     if (templateDirFile.exists())
       fmConfig.setDirectoryForTemplateLoading(templateDirFile);
+
+
+    for(dateType <- Seq("dateStarted", "dateEnded")) {
+      val date = executionData.get(dateType)
+      val dateStr = isoFormatter.format(date)
+      executionData.asInstanceOf[JMap[String,String]].put(s"${dateType}IsoString", dateStr)
+    }
 
     val template = 
       if (templateMessage != "") {
@@ -234,5 +248,6 @@ class TelegramNotificationPlugin extends NotificationPlugin {
     val out = new StringWriter()
     template.process(executionData, out)
     out.toString
-  }   
+  }
+
 }
