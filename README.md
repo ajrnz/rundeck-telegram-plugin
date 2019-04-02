@@ -15,12 +15,14 @@ Installation
 
 Building
 --------
-The plugin is written in scala so you need to have [SBT](http://www.scala-sbt.org/) installed.
+The plugin is written in scala so you need to have [mill](http://www.lihaoyi.com/mill/) installed.
 Build the plugin:
 
-    sbt rundeckPlugin
+    mill plugin.assembly
 
-The plugin will be placed in `target/rundeck-telegram-plugin-<version>.jar`
+The plugin will be placed in `out/plugin/assembly/dest/out.jar`
+
+it should be renamed `rundeck-telegram-plugin-<version>.jar` and placed in the `libext` directory of your rundeck instance.
 
 
 Configuration
@@ -144,6 +146,11 @@ If messages are not being send take a look in `/var/log/rundeck/service.log` for
 
 Change Log
 ----------
+
+1.1.0
+-----
+- Moved build to mill
+
 
 1.0.7
 -----
