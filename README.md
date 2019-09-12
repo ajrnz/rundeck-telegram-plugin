@@ -15,7 +15,7 @@ Installation
 
 Building
 --------
-The plugin is written in scala so you need to have [mill](http://www.lihaoyi.com/mill/) installed.
+The plugin is written in scala so you need to have [mill](http://www.lihaoyi.com/mill/) installed (minimum version 0.5.1).
 Build the plugin:
 
     mill plugin.assembly
@@ -138,6 +138,13 @@ For reference the available variables for substitution look like the following:
     }
 
 
+Emoji Support
+-------------
+Support for emojis can be enabled by setting the `Enable emoji parsing` flag in Telegram section of the job definition.
+When this flag is ticked the message will be parsed for strings like `:thumbsup:` which will then be converted to 👍.
+See [emoji-java](https://github.com/vdurmont/emoji-java#available-emojis) for details.
+
+
 Troubleshooting
 ---------------
 
@@ -147,14 +154,14 @@ If messages are not being send take a look in `/var/log/rundeck/service.log` for
 Change Log
 ----------
 
-1.1.0
------
-- Moved build to mill
-
-
 1.0.7
 -----
 - Tweaks to work with RunDeck 3 (thanks @NFDWADM)
 - use `dateStartedIsoString` and `dateEndedIsoString` to get string dates
+
+1.1.0
+-----
+- Moved build to mill
+- Added support for emojis via emoji-java
 
 ...

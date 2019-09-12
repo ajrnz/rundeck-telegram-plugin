@@ -3,7 +3,6 @@ package ajr.rundeck.telegram
 import java.net.InetSocketAddress
 import java.util.{Map => JMap}
 
-import scala.collection.JavaConversions._
 import com.dtolabs.rundeck.core.plugins.Plugin
 import com.dtolabs.rundeck.plugins.descriptions.PluginDescription
 import com.dtolabs.rundeck.plugins.descriptions.PluginProperty
@@ -18,7 +17,8 @@ import java.io.File
 import java.io.StringWriter
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
-import java.util.Date
+
+import com.vdurmont.emoji.EmojiParser
 
 object TelegramNotificationPlugin {
   val fmConfig = new Configuration
@@ -50,8 +50,12 @@ class TelegramNotificationPlugin extends NotificationPlugin {
 
   @PluginProperty(title = "Include job log", scope = PropertyScope.InstanceOnly)
   private var includeJobLog: Boolean = false
-  
-  @PluginProperty(title = "Template text", description = "Message template. Susbtitution possible eg ${job.name}", 
+
+  @PluginProperty(title = "Enable emoji parsing (emoji-java)",
+                  description = "See https://github.com/vdurmont/emoji-java#available-emojis for details", scope = PropertyScope.InstanceOnly)
+  private var emojiParsing: Boolean = false
+
+  @PluginProperty(title = "Template text", description = "Message template. Susbtitution possible eg ${job.name}",
                   required = false, scope = PropertyScope.InstanceOnly)
   @TextArea
   private var templateMessage: String = _
@@ -247,7 +251,11 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       }
     val out = new StringWriter()
     template.process(executionData, out)
-    out.toString
+    val message = out.toString
+    if (emojiParsing)
+      EmojiParser.parseToUnicode(message)
+    else
+      message
   }
 
 }

@@ -5,3 +5,5 @@ target
 .project
 .settings
 bin
+.bloop/
+.metals/

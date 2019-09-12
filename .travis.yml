@@ -1,5 +1,10 @@
 language: scala
 
 script:
-  - (echo "#!/usr/bin/env sh" && curl -L https://github.com/lihaoyi/mill/releases/download/0.3.6/0.3.6) > /usr/local/bin/mill && chmod +x /usr/local/bin/mill
-  - mill plugin.assembly
+  - (curl -L https://github.com/lihaoyi/mill/releases/download/0.5.1/0.5.1 > mill) && chmod +x mill
+  - ./mill plugin.assembly
+  
+cache:
+  directories:
+  - $HOME/.coursier
+  - $HOME/.mill/download
