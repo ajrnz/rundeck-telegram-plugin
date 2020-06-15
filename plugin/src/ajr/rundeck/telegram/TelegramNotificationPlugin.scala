@@ -17,6 +17,7 @@ import java.io.File
 import java.io.StringWriter
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
+import scala.collection.JavaConverters._
 
 import com.vdurmont.emoji.EmojiParser
 
@@ -208,7 +209,7 @@ class TelegramNotificationPlugin extends NotificationPlugin {
 
 
   private def getRundeckLog(execId: Int, authToken: String, baseUrl: String, http: BaseHttp) = {
-    val url = s"${baseUrl}api/6/execution/$execId/output"
+    val url = s"${baseUrl.trim}api/6/execution/$execId/output"
     val request = http(url).params(Map("authtoken" -> authToken, "format" -> "text")).asString
     if (resultOk(request.code))
       Some(request.body)
@@ -218,6 +219,12 @@ class TelegramNotificationPlugin extends NotificationPlugin {
 
   def buildMessage(executionData: JMap[_,_]): String = {
     println(s"templateDir: $templateDir")
+    if (true) {
+      println("ExecutionData")
+      for((key,value) <- executionData.asScala) {
+        println(f"  $key%-15s: $value")
+      }
+    }
     val templateDirFile = new File(templateDir)
     if (!templateDirFile.exists())
       templateDirFile.mkdir()
@@ -227,8 +234,9 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       fmConfig.setDirectoryForTemplateLoading(templateDirFile);
 
 
-    for(dateType <- Seq("dateStarted", "dateEnded")) {
+    for(dateType <- Seq("dateStarted", "dateEnded")) {      
       val date = executionData.get(dateType)
+      println(s"$dateType: $date (${date.getClass})")
       val dateStr = isoFormatter.format(date)
       executionData.asInstanceOf[JMap[String,String]].put(s"${dateType}IsoString", dateStr)
     }
