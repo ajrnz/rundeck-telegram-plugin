@@ -235,10 +235,10 @@ class TelegramNotificationPlugin extends NotificationPlugin {
 
 
     for(dateType <- Seq("dateStarted", "dateEnded")) {      
-      val date = executionData.get(dateType)
-      println(s"$dateType: $date (${date.getClass})")
-      val dateStr = isoFormatter.format(date)
-      executionData.asInstanceOf[JMap[String,String]].put(s"${dateType}IsoString", dateStr)
+      Option(executionData.get(dateType)).foreach{ date =>
+        val dateStr = isoFormatter.format(date)
+        executionData.asInstanceOf[JMap[String,String]].put(s"${dateType}IsoString", dateStr)
+      }
     }
 
     val template =

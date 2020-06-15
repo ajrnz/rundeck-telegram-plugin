@@ -26,7 +26,7 @@ trait RundeckPlugin extends JavaModule {
 
 
 object plugin extends ScalaModule with RundeckPlugin {
-  def scalaVersion = "2.12.10"
+  def scalaVersion = "2.12.11"
 
   def compileIvyDeps = Agg(
     ivy"org.rundeck:rundeck-core:3.0.26-20190829"
@@ -39,5 +39,5 @@ object plugin extends ScalaModule with RundeckPlugin {
   )
 
   def pluginClassNames = Seq("ajr.rundeck.telegram.TelegramNotificationPlugin")
-  def pluginVersion = "1.1.0"
+  def pluginVersion = "1.1.3"
 }

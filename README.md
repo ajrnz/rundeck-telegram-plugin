@@ -164,4 +164,9 @@ Change Log
 - Moved build to mill
 - Added support for emojis via emoji-java
 
+1.1.3
+-----
+- Fixed a bug with start notifications which was causing failures
+
+
 ...
