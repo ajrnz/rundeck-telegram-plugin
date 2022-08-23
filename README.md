@@ -43,6 +43,8 @@ You can them map your bots and chats to aliases to use in the plugin. Eg put the
     telegram.ids.chat.bob=22222222
 
 You can then refer to your bots and chats by name in the plugin although the IDs are accepted as well.
+You can set the chatid on the project level as well, if this is the preferred way for you.
+    project.plugin.Notification.TelegramNotification.projectChatId=value
 
 
 ### Plugin configuration
@@ -168,5 +170,7 @@ Change Log
 -----
 - Fixed a bug with start notifications which was causing failures
 
-
+1.1.4
+-----
+- Added option project.plugin.Notification.TelegramNotification.projectChatId
 ...
