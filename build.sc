@@ -39,5 +39,5 @@ object plugin extends ScalaModule with RundeckPlugin {
   )
 
   def pluginClassNames = Seq("ajr.rundeck.telegram.TelegramNotificationPlugin")
-  def pluginVersion = "1.1.3"
+  def pluginVersion = "1.1.4"
 }

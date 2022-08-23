@@ -39,6 +39,11 @@ class TelegramNotificationPlugin extends NotificationPlugin {
                   required = false, scope = PropertyScope.Project)
   private var projectBotAuthToken: String = _
   
+  @PluginProperty(title = "Project default Chat name/ID", 
+                  description = "Name or ID of chat to send message to. Names must be defined in telegram.properties", 
+                  required = false, scope = PropertyScope.Project)
+  private var projectChatId: String = _
+  
   @PluginProperty(title = "Chat name/ID", 
                   description = "Name or ID of chat to send message to. Names must be defined in telegram.properties", 
                   required = false, scope = PropertyScope.InstanceOnly)
@@ -136,9 +141,10 @@ class TelegramNotificationPlugin extends NotificationPlugin {
       val telegramAPi = get[String]("telegramApiBaseUrl", config)
       val botAuthO = tids.lookupBot(ifEmpty(get[String]("botAuthToken", config, ""), 
                                             get[String]("projectBotAuthToken", config, missing("botAuthToken or projectBotAuthToken"))))
-     
-      val chatO = tids.lookupChat(get[String]("chatId", config))
-        
+
+      val chatO = tids.lookupChat(ifEmpty(get[String]("chatId", config, ""),
+                                            get[String]("projectChatId", config, missing("chatId or projectChatId"))))
+
       val templateMessage = get[String]("templateMessage", config, "")
       val templatePath = get[String]("templatePath", config, "")
       val templateProject = get[String]("templateProject", config, "")
